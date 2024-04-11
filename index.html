@@ -11,21 +11,45 @@
     <script src="./js/pocketbase.umd.js"></script>
 
     <script type="text/javascript">
-        const pb = new PocketBase("https://pb.ellep.dev/");
-
-        const login = async () => await pb.collection("users").authWithOAuth2({provider: "google"});
-
-        login().then((authData) => {
-            console.log(pb.authStore.isValid);
-            console.log(pb.authStore.token);
-            console.log(pb.authStore.model.id);
-
-            pb.authStore.clear();
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('auth', () => ({
+                userEmail: null,
+                init() {
+                    this.updateEmail();
+                },
+                login: async function () {
+                    await pb.collection("users").authWithOAuth2({provider: "google"});
+                    this.updateEmail();
+                },
+                logout: function () {
+                    pb.authStore.clear();
+                    this.updateEmail();
+                },
+                updateEmail: function () {
+                    if (pb.authStore.isValid) {
+                        this.userEmail = pb.authStore.model.email;
+                    } else {
+                        this.userEmail = null;
+                    }
+                }
+            }));
         });
+
+        const pb = new PocketBase("https://pb.ellep.dev/");
     </script>
 </head>
 
 <body>
+    <div x-data="auth()" x-init="init()">
+        <button x-on:click="login()">Login</button>
+        <button x-on:click="logout()">Logout</button>
+
+        <template x-if="userEmail">
+            <div>
+                <span x-text="userEmail"></span>
+            </div>
+        </template>
+    </div>
 </body>
 
 </html>
