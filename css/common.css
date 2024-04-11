@@ -1,0 +1,13 @@
+body>header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body>header .container nav ul.icons:before {
+    display: block;
+    height: 1.125rem;
+    margin-inline: 0.5rem;
+    border-left: 0.0625rem solid #cfd5e2;
+    content: "";
+}

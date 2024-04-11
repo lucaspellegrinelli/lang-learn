@@ -8,6 +8,7 @@
     <title>Lang Learn</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="/css/common.css">
 
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -15,22 +16,6 @@
 
     <script src="/js/pocketbase.js"></script>
     <script src="/js/auth.js"></script>
-
-    <style>
-        body>header .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        body>header .container nav ul.icons:before {
-            display: block;
-            height: 1.125rem;
-            margin-inline: 0.5rem;
-            border-left: 0.0625rem solid #cfd5e2;
-            content: "";
-        }
-    </style>
 </head>
 
 <body>
@@ -73,18 +58,12 @@
                                     </path>
                                 </g>
                             </svg>
-                            </a>
+                        </span>
                     </li>
-
                 </ul>
             </nav>
         </div>
     </header>
-    <!-- <div x-data> -->
-    <!--     <button @click="$store.auth.login()">Login</button> -->
-    <!--     <button @click="$store.auth.logout()">Logout</button> -->
-
-    <!-- </div> -->
 </body>
 
 </html>
