@@ -26,11 +26,17 @@
             <nav>
                 <ul>
                     <template x-if="$store.auth.userEmail">
-                        <li><span x-text="$store.auth.userEmail" @click="$store.auth.logout()"></span></li>
+                        <li>
+                            <a rel="noopener noreferrer" aria-label="User email" x-text="$store.auth.userEmail"
+                                class="contrast" @click="$store.auth.logout()"></a>
+                        </li>
                     </template>
 
                     <template x-if="!$store.auth.userEmail">
-                        <li><span class="contrast" @click="$store.auth.login()">Login</span></li>
+                        <li>
+                            <a rel="noopener noreferrer" aria-label="Login button" class="contrast"
+                                @click="$store.auth.login()">Login</a>
+                        </li>
                     </template>
                 </ul>
                 <ul class="icons">
@@ -45,7 +51,8 @@
                         </a>
                     </li>
                     <li>
-                        <span class="contrast" onclick="toggleDarkMode()">
+                        <a rel="noopener noreferrer" class="contrast" aria-label="Toggle dark mode"
+                            onclick="toggleDarkMode()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"
                                 fill="currentColor">
                                 <clipPath id="theme-toggle-cutout">
@@ -58,14 +65,16 @@
                                     </path>
                                 </g>
                             </svg>
-                        </span>
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    {{ content }}
+    <div class="container">
+        {{ content }}
+    </div>
 </body>
 
 </html>
