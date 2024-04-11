@@ -2,5 +2,28 @@
 layout: default
 permalink: editor/
 ---
-
-Editor
+<div x-data>
+  <div class="container">
+    <h1>Editor</h1>
+    <div x-show="$store.editor.wordPacks.length">
+      <template x-for="wordPack in $store.editor.wordPacks">
+        <details>
+          <summary x-text="wordPack.name"></summary>
+          <ul>
+            <template x-for="word in wordPack.expand.words_via_pack">
+              <li>
+                <details>
+                  <summary x-text="word.characters"></summary>
+                  <p x-text="word.pronunciation"></p>
+                  <p x-text="word.translation"></p>
+                </details>
+              </li>
+            </template>
+          </ul>
+        </details>
+      </template>
+    </div>
+    <div x-show="!$store.editor.wordPacks.length">
+      <p>Loading...</p>
+    </div>
+  </div>
