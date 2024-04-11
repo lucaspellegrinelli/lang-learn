@@ -11,20 +11,9 @@
     <script src="./js/pocketbase.umd.js"></script>
 
     <script type="text/javascript">
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('auth', () => ({
+        document.addEventListener("alpine:init", () => {
+            Alpine.store("auth", {
                 userEmail: null,
-                init() {
-                    this.updateEmail();
-                },
-                login: async function () {
-                    await pb.collection("users").authWithOAuth2({provider: "google"});
-                    this.updateEmail();
-                },
-                logout: function () {
-                    pb.authStore.clear();
-                    this.updateEmail();
-                },
                 updateEmail: function () {
                     if (pb.authStore.isValid) {
                         this.userEmail = pb.authStore.model.email;
@@ -32,21 +21,36 @@
                         this.userEmail = null;
                     }
                 }
-            }));
+            });
+
         });
 
         const pb = new PocketBase("https://pb.ellep.dev/");
+
+        const login = async () => {
+            await pb.collection("users").authWithOAuth2({provider: "google"});
+            Alpine.store("auth").updateEmail();
+        };
+
+        const logout = () => {
+            pb.authStore.clear();
+            Alpine.store("auth").updateEmail();
+        };
+
+        window.onload = () => {
+            Alpine.store("auth").updateEmail();
+        };
     </script>
 </head>
 
 <body>
-    <div x-data="auth()" x-init="init()">
-        <button x-on:click="login()">Login</button>
-        <button x-on:click="logout()">Logout</button>
+    <div x-data>
+        <button @click="login()">Login</button>
+        <button @click="logout()">Logout</button>
 
-        <template x-if="userEmail">
+        <template x-if="$store.auth.userEmail">
             <div>
-                <span x-text="userEmail"></span>
+                <span x-text="$store.auth.userEmail"></span>
             </div>
         </template>
     </div>
