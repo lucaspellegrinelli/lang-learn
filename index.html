@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="./js/pocketbase.umd.js"></script>
+
+    <script type="text/javascript">
+        const pb = new PocketBase("https://pb.ellep.dev/");
+
+        const login = async () => await pb.collection("users").authWithOAuth2({provider: "google"});
+
+        login().then((authData) => {
+            console.log(pb.authStore.isValid);
+            console.log(pb.authStore.token);
+            console.log(pb.authStore.model.id);
+
+            pb.authStore.clear();
+        });
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
