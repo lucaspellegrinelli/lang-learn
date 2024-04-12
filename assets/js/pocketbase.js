@@ -8,10 +8,12 @@ const authStore = {
     login: async function() {
         await pb.collection("users").authWithOAuth2({ provider: "google" });
         this.updateEmail();
+        window.location.href = "/";
     },
     logout: function() {
         pb.authStore.clear();
         this.updateEmail();
+        window.location.href = "/";
     }
 }
 

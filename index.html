@@ -9,9 +9,47 @@ permalink: /
       currentProblem: undefined,
       wordPacks: [],
       help: false,
+
+      stateHistory: [],
+      canvas: undefined,
+
       init(wordPacks) {
         this.wordPacks = wordPacks;
         this.generateRandomWord();
+      },
+      initCanvas() {
+        const canvasDom = this.$refs.canvas;
+        const fullWidth = canvasDom.clientWidth;
+        const fullHeight = canvasDom.clientHeight;
+        this.canvas = new fabric.Canvas(canvasDom, {
+          isDrawingMode: true,
+          backgroundColor: 'white',
+          width: fullWidth,
+          height: fullHeight
+        });
+
+        this.canvas.freeDrawingBrush.color = 'black';
+        this.canvas.freeDrawingBrush.width = 7;
+
+        this.canvas.on('mouse:down', () => {
+          this.stateHistory.push(this.canvas.toDataURL());
+        });
+      },
+      canvasUndo() {
+        if (this.stateHistory.length > 0) {
+          fabric.Image.fromURL(this.stateHistory.pop(), img => {
+            this.canvas.clear();
+            this.canvas.add(img);
+          });
+        }
+      },
+      canvasClear() {
+        this.canvas.clear();
+        this.canvas.backgroundColor = 'white';
+        this.stateHistory = [];
+      },
+      toggleHelp() {
+        this.help = !this.help;
       },
       generateRandomWord() {
         if (!this.wordPacks || this.wordPacks.length === 0) {
@@ -34,15 +72,37 @@ permalink: /
   }
 </script>
 
-<div x-data="data()" x-init="$watch('init($store.editor.wordPacks)', () => {})">
-  <div class="game">
-    <template x-if="currentProblem">
-      <div>
-        <span x-text="currentProblem.given"></span>
-        <span class="hint-hanzi" x-text="currentProblem.characters"></span>
-        <span x-text="currentProblem.other"></span>
+<div x-data>
+  <template x-if="$store.auth.userEmail">
+    <div x-data="data()" x-init="$watch('init($store.editor.wordPacks)', () => {})">
+      <div class="game">
+        <template x-if="currentProblem">
+          <div>
+            <div class="problem-container">
+              <span x-text="currentProblem.given"></span>
+              <template x-if="help">
+                <div class="is-flex is-flex-direction-column is-align-items-center">
+                  <span class="hint-hanzi" x-text="currentProblem.characters"></span>
+                  <span x-text="currentProblem.other"></span>
+                </div>
+              </template>
+            </div>
+            <canvas x-ref="canvas" x-init="initCanvas()"></canvas>
+            <div>
+              <button class="button" @click="toggleHelp()">Help</button>
+              <button class="button" @click="canvasUndo()">Undo</button>
+              <button class="button" @click="canvasClear()">Clear</button>
+              <button class="button" @click="generateRandomWord()">Next</button>
+            </div>
+          </div>
+        </template>
       </div>
-    </template>
-  </div>
-  <button @click="generateRandomWord()">Generate random word</button>
+    </div>
+  </template>
+  <template x-if="!$store.auth.userEmail">
+    <div class="container">
+      <p>Please log in to access this page.</p>
+      <button class="button is-light" @click="$store.auth.login()">Log in</button>
+    </div>
+  </template>
 </div>

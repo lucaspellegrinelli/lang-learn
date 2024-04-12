@@ -75,3 +75,14 @@ input[type=checkbox] {
     align-items: center;
     margin-top: 2rem;
 }
+
+canvas {
+    border: 1px solid #ccc;
+    width: 100%;
+    height: 350px;
+    border-radius: 0.5rem;
+}
+
+.problem-container {
+    height: 250px;
+}
