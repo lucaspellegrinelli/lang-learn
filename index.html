@@ -3,4 +3,48 @@ layout: default
 permalink: /
 ---
 
-Index
+<script>
+  function data() {
+    return {
+      currentProblem: undefined,
+      wordPacks: [],
+      help: false,
+      setWordPacks(wordPacks) {
+        if (!wordPacks) {
+          this.wordPacks = [];
+          return;
+        }
+
+        this.wordPacks = wordPacks;
+      },
+      generateRandomWord(wordPacks) {
+        this.setWordPacks(wordPacks);
+
+        const enabledWordPacks = this.wordPacks.filter((pack) => pack.enabled);
+        const wordPool = enabledWordPacks.flatMap((pack) => pack.expand.words_via_pack);
+        const randomIndex = Math.floor(Math.random() * wordPool.length);
+
+        const r = Math.random() > 0.5;
+        const word = wordPool[randomIndex];
+        this.currentProblem = {
+          given: r ? word.translation : word.pronunciation,
+          characters: word.characters,
+          other: r ? word.pronunciation : word.translation,
+        };
+      },
+    }
+  }
+</script>
+
+<div x-data="data()">
+  <div class="game">
+    <template x-if="currentProblem">
+      <div>
+        <span x-text="currentProblem.given"></span>
+        <span class="hint-hanzi" x-text="currentProblem.characters"></span>
+        <span x-text="currentProblem.other"></span>
+      </div>
+    </template>
+  </div>
+  <button @click="generateRandomWord($store.editor.wordPacks)">Generate random word</button>
+</div>
