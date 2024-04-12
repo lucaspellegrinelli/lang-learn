@@ -9,16 +9,14 @@ permalink: /
       currentProblem: undefined,
       wordPacks: [],
       help: false,
-      setWordPacks(wordPacks) {
-        if (!wordPacks) {
-          this.wordPacks = [];
+      init(wordPacks) {
+        this.wordPacks = wordPacks;
+        this.generateRandomWord();
+      },
+      generateRandomWord() {
+        if (!this.wordPacks || this.wordPacks.length === 0) {
           return;
         }
-
-        this.wordPacks = wordPacks;
-      },
-      generateRandomWord(wordPacks) {
-        this.setWordPacks(wordPacks);
 
         const enabledWordPacks = this.wordPacks.filter((pack) => pack.enabled);
         const wordPool = enabledWordPacks.flatMap((pack) => pack.expand.words_via_pack);
@@ -36,7 +34,7 @@ permalink: /
   }
 </script>
 
-<div x-data="data()">
+<div x-data="data()" x-init="$watch('init($store.editor.wordPacks)', () => {})">
   <div class="game">
     <template x-if="currentProblem">
       <div>
@@ -46,5 +44,5 @@ permalink: /
       </div>
     </template>
   </div>
-  <button @click="generateRandomWord($store.editor.wordPacks)">Generate random word</button>
+  <button @click="generateRandomWord()">Generate random word</button>
 </div>
