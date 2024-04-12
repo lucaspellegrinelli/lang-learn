@@ -11,3 +11,30 @@ body>header .container nav ul.icons:before {
     border-left: 0.0625rem solid #cfd5e2;
     content: "";
 }
+
+.data-table {
+    table-layout: fixed;
+    width: 768px;
+}
+
+.data-table td {
+    padding: 0;
+    padding-right: 10px;
+    height: 40px;
+    width: 80%;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.data-table input {
+    width: 90%;
+    height: 100%;
+    border-radius: 0;
+    border: 0;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.deleted-row {
+    background-color: #ff948c;
+}

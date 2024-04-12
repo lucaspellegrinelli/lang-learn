@@ -2,25 +2,179 @@
 layout: default
 permalink: editor/
 ---
-<div x-data>
+
+<script>
+  function data() {
+    return {
+      targetWordPack: undefined,
+      deleted: [],
+      changed: {},
+      inserted: [],
+      insertRow() {
+        this.inserted.push({
+          id: this.inserted.length + 1,
+          characters: "",
+          pronunciation: "",
+          translation: "",
+        });
+      },
+      handleTextChangeOnInsertedRow(event, word, field) {
+        this.inserted = this.inserted.map((w) => {
+          if (w.id === word.id) {
+            return {
+              ...w,
+              [field]: event.target.value,
+            };
+          }
+
+          return w;
+        });
+      },
+      handleTextChange(event, word, field) {
+        if (this.isInserted(word)) {
+          this.handleTextChangeOnInsertedRow(event, word, field);
+          return;
+        }
+
+        if (this.changed[word.id] === undefined) {
+          this.changed[word.id] = {};
+        }
+
+        if (event.target.value === word[field]) {
+          delete this.changed[word.id][field];
+
+          if (Object.keys(this.changed[word.id]).length === 0) {
+            delete this.changed[word.id];
+          }
+
+          return;
+        }
+
+        this.changed[word.id][field] = event.target.value;
+      },
+      deleteEntry(word) {
+        if (this.isInserted(word)) {
+          this.inserted = this.inserted.filter((w) => w.id !== word.id);
+          return;
+        }
+
+        this.deleted.push(word.id);
+      },
+      undeleteEntry(word) {
+        this.deleted = this.deleted.filter((id) => id !== word.id);
+      },
+      isDeleted(word) {
+        return this.deleted.includes(word.id);
+      },
+      isInserted(word) {
+        return this.inserted.includes(word);
+      },
+      getAllWords(inDbEntries) {
+        return [...inDbEntries, ...this.inserted];
+      },
+      submitChanges(packId) {
+        const insertions = this.inserted.map((word) => pb.collection("words").create({
+          pack: packId,
+          characters: word.characters,
+          pronunciation: word.pronunciation,
+          translation: word.translation,
+        }));
+
+        const updates = Object.entries(this.changed).map(([id, changes]) => pb.collection("words").update(id, changes));
+        const deletions = this.deleted.map((id) => pb.collection("words").delete(id));
+
+        Promise.all([...insertions, ...updates, ...deletions]).then(() => {
+          this.inserted = [];
+          this.changed = {};
+          this.deleted = [];
+          Alpine.store("editor").updateWordPacks();
+          this.closeModal();
+        });
+
+      },
+      currentWordPack() {
+        if (!this.targetWordPack) {
+          return [];
+        }
+
+        if (!this.targetWordPack.expand) {
+          return [];
+        }
+
+        return this.targetWordPack.expand.words_via_pack;
+      },
+      openModal(wordPack) {
+        this.targetWordPack = wordPack;
+        document.getElementById("edit-word-pack").classList.add("is-active");
+      },
+      closeModal() {
+        document.getElementById("edit-word-pack").classList.remove("is-active");
+      },
+    };
+  }
+</script>
+
+<div x-data="data()">
+  <div class="modal" x-data id="edit-word-pack">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title" x-text="targetWordPack ? targetWordPack.name : ''"></p>
+        <button class="delete" aria-label="close" @click="closeModal"></button>
+      </header>
+      <section class="modal-card-body">
+        <table class="table data-table">
+          <thead>
+            <tr>
+              <th>Characters</th>
+              <th>Pronunciation</th>
+              <th>Translation</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="word in getAllWords(currentWordPack())">
+              <tr :class="{ 'deleted-row': isDeleted(word) }">
+                <td>
+                  <input class="px-2" placeholder="Characters" :value="word.characters" :data-id="word.id"
+                    @input="handleTextChange($event, word, 'characters')" />
+                </td>
+
+                <td>
+                  <input class="px-2" placeholder="Pronunciation" :value="word.pronunciation" :data-id="word.id"
+                    @input="handleTextChange($event, word, 'pronunciation')" />
+                </td>
+
+                <td>
+                  <input class="px-2" placeholder="Translation" :value="word.translation" :data-id="word.id"
+                    @input="handleTextChange($event, word, 'translation')" />
+                </td>
+
+                <td x-show="!isDeleted(word)">
+                  <button class="button is-small is-danger" @click="deleteEntry(word)">Delete</button>
+                </td>
+
+                <td x-show="isDeleted(word)">
+                  <button class="button is-small is-success" @click="undeleteEntry(word)">Undelete</button>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <button class="button is-small" @click="insertRow()">Add row</button>
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button class="button is-primary" @click="submitChanges(targetWordPack.id)">Save changes</button>
+          <button class="button" @click="closeModal">Cancel</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
   <div class="container">
-    <h1>Editor</h1>
     <div x-show="$store.editor.wordPacks.length">
       <template x-for="wordPack in $store.editor.wordPacks">
-        <details>
-          <summary x-text="wordPack.name"></summary>
-          <ul>
-            <template x-for="word in wordPack.expand.words_via_pack">
-              <li>
-                <details>
-                  <summary x-text="word.characters"></summary>
-                  <p x-text="word.pronunciation"></p>
-                  <p x-text="word.translation"></p>
-                </details>
-              </li>
-            </template>
-          </ul>
-        </details>
+        <button class="button" @click="openModal(wordPack)" x-text="wordPack.name"></button>
       </template>
     </div>
     <div x-show="!$store.editor.wordPacks.length">
