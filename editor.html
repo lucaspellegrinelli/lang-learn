@@ -6,7 +6,7 @@ permalink: editor/
 <script>
   function data() {
     return {
-      targetWordPack: undefined,
+      targetWordPack: {name: ""},
       deleted: [],
       changed: {},
       inserted: [],
@@ -72,7 +72,26 @@ permalink: editor/
       getAllWords(inDbEntries) {
         return [...inDbEntries, ...this.inserted];
       },
-      submitChanges(packId) {
+      createWordPack() {
+        pb.collection("wordpacks").create({
+          name: "New word pack",
+          user: pb.authStore.model.id,
+        }).then(() => {
+          Alpine.store("editor").updateWordPacks();
+        });
+      },
+      submitChanges(targetPack) {
+        const packId = targetPack.id;
+        pb.autoCancellation(false);
+
+        const invalidInsertions = this.inserted.filter((word) => !word.characters || !word.pronunciation || !word.translation);
+        const invalidChanges = Object.entries(this.changed).filter(([id, changes]) => !changes.characters || !changes.pronunciation || !changes.translation);
+
+        if (invalidInsertions.length || invalidChanges.length) {
+          alert("Please fill all fields before submitting changes.");
+          return;
+        }
+
         const insertions = this.inserted.map((word) => pb.collection("words").create({
           pack: packId,
           characters: word.characters,
@@ -82,15 +101,24 @@ permalink: editor/
 
         const updates = Object.entries(this.changed).map(([id, changes]) => pb.collection("words").update(id, changes));
         const deletions = this.deleted.map((id) => pb.collection("words").delete(id));
+        const updatePackName = pb.collection("wordpacks").update(targetPack.id, {name: targetPack.name});
 
-        Promise.all([...insertions, ...updates, ...deletions]).then(() => {
+        Promise.all([...insertions, ...updates, ...deletions, updatePackName]).then(() => {
+          pb.autoCancellation(true);
+
           this.inserted = [];
           this.changed = {};
           this.deleted = [];
+
           Alpine.store("editor").updateWordPacks();
           this.closeModal();
         });
-
+      },
+      deleteWordPack(packId) {
+        pb.collection("wordpacks").delete(packId).then(() => {
+          Alpine.store("editor").updateWordPacks();
+          this.closeModal();
+        });
       },
       currentWordPack() {
         if (!this.targetWordPack) {
@@ -110,6 +138,12 @@ permalink: editor/
       closeModal() {
         document.getElementById("edit-word-pack").classList.remove("is-active");
       },
+      handlePackEnabledChange(event, wordPack) {
+        const checked = event.target.checked;
+        pb.collection("wordpacks").update(wordPack.id, {enabled: checked}).then(() => {
+          Alpine.store("editor").updateWordPacks();
+        });
+      }
     };
   }
 </script>
@@ -119,15 +153,21 @@ permalink: editor/
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title" x-text="targetWordPack ? targetWordPack.name : ''"></p>
+        <input class="input" x-model="targetWordPack.name" placeholder="Pack name" />
         <button class="delete" aria-label="close" @click="closeModal"></button>
       </header>
       <section class="modal-card-body">
         <table class="table data-table">
+          <colgroup>
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 50%;">
+            <col style="width: 10%;">
+          </colgroup>
           <thead>
             <tr>
               <th>Characters</th>
-              <th>Pronunciation</th>
+              <th>Pronun.</th>
               <th>Translation</th>
               <th></th>
             </tr>
@@ -155,7 +195,7 @@ permalink: editor/
                 </td>
 
                 <td x-show="isDeleted(word)">
-                  <button class="button is-small is-success" @click="undeleteEntry(word)">Undelete</button>
+                  <button class="button is-small is-success" @click="undeleteEntry(word)">Undo</button>
               </tr>
             </template>
           </tbody>
@@ -164,7 +204,9 @@ permalink: editor/
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
-          <button class="button is-primary" @click="submitChanges(targetWordPack.id)">Save changes</button>
+          <button class="button is-primary" @click="submitChanges(targetWordPack)">
+            Save changes
+          </button>
           <button class="button" @click="closeModal">Cancel</button>
         </div>
       </footer>
@@ -173,11 +215,35 @@ permalink: editor/
 
   <div class="container">
     <div x-show="$store.editor.wordPacks.length">
-      <template x-for="wordPack in $store.editor.wordPacks">
-        <button class="button" @click="openModal(wordPack)" x-text="wordPack.name"></button>
-      </template>
+      <table class="word-pack-table table" style="width: 100%;">
+        <colgroup>
+          <col style="width: 10%;">
+          <col style="width: 30%;">
+          <col style="width: 50%;">
+          <col style="width: 10%;">
+        </colgroup>
+        <tr>
+          <th>Enabled</th>
+          <th>Name</th>
+          <th>Words</th>
+          <th></th>
+        </tr>
+        <template x-for="wordPack in $store.editor.wordPacks">
+          <tr>
+            <td><input type="checkbox" x-model="wordPack.enabled" @input="handlePackEnabledChange($event, wordPack)" />
+            </td>
+            <td x-text="wordPack.name"></td>
+            <td x-text="wordPack.expand ? wordPack.expand.words_via_pack.map((w) => w.characters).join(', ') : ''"></td>
+            <td class="is-flex is-justify-content-flex-end">
+              <button class="button mr-2" @click="openModal(wordPack)">Edit</button>
+              <button class="button is-danger" @click="deleteWordPack(wordPack.id)">Delete</button>
+            </td>
+        </template>
+      </table>
     </div>
     <div x-show="!$store.editor.wordPacks.length">
-      <p>Loading...</p>
+      <p>No word packs found.</p>
     </div>
+
+    <button class="button is-primary" @click="createWordPack()">Create new word pack</button>
   </div>

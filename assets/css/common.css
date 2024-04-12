@@ -14,20 +14,19 @@ body>header .container nav ul.icons:before {
 
 .data-table {
     table-layout: fixed;
-    width: 768px;
+    width: 100%;
 }
 
 .data-table td {
     padding: 0;
     padding-right: 10px;
     height: 40px;
-    width: 80%;
     align-items: center;
     vertical-align: middle;
 }
 
 .data-table input {
-    width: 90%;
+    width: 100%;
     height: 100%;
     border-radius: 0;
     border: 0;
@@ -37,4 +36,19 @@ body>header .container nav ul.icons:before {
 
 .deleted-row {
     background-color: #ff948c;
+}
+
+.modal-card-head input {
+    border-radius: 0;
+    border: 0;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+.word-pack-table td {
+    vertical-align: middle;
 }
