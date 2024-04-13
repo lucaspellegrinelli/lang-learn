@@ -51,6 +51,11 @@ permalink: /
       toggleHelp() {
         this.help = !this.help;
       },
+      next() {
+        this.help = false;
+        this.canvasClear();
+        this.generateRandomWord();
+      },
       generateRandomWord() {
         if (!this.wordPacks || this.wordPacks.length === 0) {
           return;
@@ -92,7 +97,7 @@ permalink: /
               <button class="button is-fullwidth" @click="toggleHelp()">Help</button>
               <button class="button is-fullwidth" @click="canvasUndo()">Undo</button>
               <button class="button is-fullwidth" @click="canvasClear()">Clear</button>
-              <button class="button is-fullwidth" @click="generateRandomWord()">Next</button>
+              <button class="button is-fullwidth" @click="next()">Next</button>
             </div>
           </div>
         </template>
