@@ -90,3 +90,12 @@ canvas {
     position: absolute;
     width: 100%;
 }
+
+.navbar-logo {
+    font-size: 2.5rem;
+}
+
+.navbar-item {
+    min-height: 2rem;
+    line-height: 2rem;
+}

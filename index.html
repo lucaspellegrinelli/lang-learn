@@ -63,6 +63,11 @@ permalink: /
 
         const enabledWordPacks = this.wordPacks.filter((pack) => pack.enabled);
         const wordPool = enabledWordPacks.flatMap((pack) => pack.expand.words_via_pack);
+        
+        if (wordPool.length === 0) {
+          return;
+        }
+
         const randomIndex = Math.floor(Math.random() * wordPool.length);
 
         const r = Math.random() > 0.5;

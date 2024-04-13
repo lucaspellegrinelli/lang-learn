@@ -155,7 +155,7 @@ permalink: editor/
 </script>
 
 <div x-data="data()">
-  <div class="modal" id="edit-word-pack">
+  <div class="modal p-1" id="edit-word-pack">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -219,19 +219,13 @@ permalink: editor/
     </div>
   </div>
 
-  <div class="container">
+  <div class="container p-1">
     <div x-show="$store.editor.wordPacks.length">
       <table class="word-pack-table table" style="width: 100%;">
-        <colgroup>
-          <col style="width: 10%;">
-          <col style="width: 30%;">
-          <col style="width: 50%;">
-          <col style="width: 10%;">
-        </colgroup>
         <tr>
           <th>Enabled</th>
           <th>Name</th>
-          <th>Words</th>
+          <th class="is-hidden-mobile">Words</th>
           <th></th>
         </tr>
         <template x-for="wordPack in $store.editor.wordPacks">
@@ -239,7 +233,8 @@ permalink: editor/
             <td><input type="checkbox" x-model="wordPack.enabled" @input="handlePackEnabledChange($event, wordPack)" />
             </td>
             <td x-text="wordPack.name"></td>
-            <td x-text="wordPack.expand ? wordPack.expand.words_via_pack.map((w) => w.characters).join(', ') : ''"></td>
+            <td class="is-hidden-mobile"
+              x-text="wordPack.expand ? wordPack.expand.words_via_pack.map((w) => w.characters).join(', ') : ''"></td>
             <td class="is-flex is-justify-content-flex-end">
               <button class="button mr-2" @click="openModal(wordPack)">Edit</button>
               <button class="button is-danger" @click="deleteWordPack(wordPack.id)">Delete</button>
