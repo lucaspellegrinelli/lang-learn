@@ -57,15 +57,15 @@
             </div>
             <div id="navbarBasicExample" class="navbar-menu">
                 <div class="navbar-start">
-                    <a class="navbar-item" href="/">Home</a>
+                    <a class="navbar-item has-text-centered" href="/">Home</a>
                     <template x-if="$store.auth.userEmail">
-                        <a class="navbar-item" href="/editor">Pack editor</a>
+                        <a class="navbar-item has-text-centered" href="/editor">Pack editor</a>
                     </template>
                 </div>
 
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <div class="buttons">
+                        <div class="buttons is-flex is-justify-content-center">
                             <template x-if="$store.auth.userEmail">
                                 <a @click="$store.auth.logout()" x-text="$store.auth.userEmail"
                                     class="button is-light"></a>
