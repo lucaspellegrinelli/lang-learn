@@ -76,6 +76,7 @@ permalink: editor/
         pb.collection("wordpacks").create({
           name: "New word pack",
           user: pb.authStore.model.id,
+          enabled: true,
         }).then(() => {
           Alpine.store("editor").updateWordPacks();
         });
