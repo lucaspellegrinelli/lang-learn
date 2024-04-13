@@ -182,17 +182,17 @@ permalink: editor/
             <template x-for="word in getAllWords(currentWordPack())">
               <tr :class="{ 'deleted-row': isDeleted(word) }">
                 <td>
-                  <input class="px-2" placeholder="Characters" :value="word.characters" :data-id="word.id"
+                  <input class="input px-2" placeholder="Characters" :value="word.characters" :data-id="word.id"
                     @input="handleTextChange($event, word, 'characters')" />
                 </td>
 
                 <td>
-                  <input class="px-2" placeholder="Pronunciation" :value="word.pronunciation" :data-id="word.id"
+                  <input class="input px-2" placeholder="Pronunciation" :value="word.pronunciation" :data-id="word.id"
                     @input="handleTextChange($event, word, 'pronunciation')" />
                 </td>
 
                 <td>
-                  <input class="px-2" placeholder="Translation" :value="word.translation" :data-id="word.id"
+                  <input class="input px-2" placeholder="Translation" :value="word.translation" :data-id="word.id"
                     @input="handleTextChange($event, word, 'translation')" />
                 </td>
 
