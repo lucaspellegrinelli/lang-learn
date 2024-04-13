@@ -88,11 +88,11 @@ permalink: /
               </template>
             </div>
             <canvas x-ref="canvas" x-init="initCanvas()"></canvas>
-            <div>
-              <button class="button" @click="toggleHelp()">Help</button>
-              <button class="button" @click="canvasUndo()">Undo</button>
-              <button class="button" @click="canvasClear()">Clear</button>
-              <button class="button" @click="generateRandomWord()">Next</button>
+            <div class="is-flex is-justify-content-space-evenly">
+              <button class="button is-fullwidth" @click="toggleHelp()">Help</button>
+              <button class="button is-fullwidth" @click="canvasUndo()">Undo</button>
+              <button class="button is-fullwidth" @click="canvasClear()">Clear</button>
+              <button class="button is-fullwidth" @click="generateRandomWord()">Next</button>
             </div>
           </div>
         </template>

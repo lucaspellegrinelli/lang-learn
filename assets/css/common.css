@@ -58,7 +58,7 @@ input[type=checkbox] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 600px;
+    height: 100%;
 }
 
 .game span {
@@ -85,4 +85,9 @@ canvas {
 
 .problem-container {
     height: 250px;
+}
+
+.navbar-menu.is-active {
+    position: absolute;
+    width: 100%;
 }
