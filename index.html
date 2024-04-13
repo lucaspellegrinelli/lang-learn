@@ -83,7 +83,7 @@ permalink: /
       <div class="game">
         <template x-if="currentProblem">
           <div>
-            <div class="problem-container">
+            <div class="problem-container pt-4">
               <span x-text="currentProblem.given"></span>
               <template x-if="help">
                 <div class="is-flex is-flex-direction-column is-align-items-center">
@@ -93,11 +93,11 @@ permalink: /
               </template>
             </div>
             <canvas x-ref="canvas" x-init="initCanvas()"></canvas>
-            <div class="is-flex is-justify-content-space-evenly">
-              <button class="button is-fullwidth" @click="toggleHelp()">Help</button>
-              <button class="button is-fullwidth" @click="canvasUndo()">Undo</button>
-              <button class="button is-fullwidth" @click="canvasClear()">Clear</button>
-              <button class="button is-fullwidth" @click="next()">Next</button>
+            <div class="is-flex is-justify-content-space-evenly mt-2">
+              <button class="button is-fullwidth mx-1" @click="toggleHelp()">Help</button>
+              <button class="button is-fullwidth mx-1" @click="canvasUndo()">Undo</button>
+              <button class="button is-fullwidth mx-1" @click="canvasClear()">Clear</button>
+              <button class="button is-fullwidth mx-1" @click="next()">Next</button>
             </div>
           </div>
         </template>
