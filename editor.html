@@ -162,19 +162,19 @@ permalink: editor/
         <input class="input" x-model="targetWordPack.name" placeholder="Pack name" />
         <button class="delete" aria-label="close" @click="closeModal"></button>
       </header>
-      <section class="modal-card-body">
+      <section class="modal-card-body p-2">
         <table class="table data-table">
           <colgroup>
-            <col style="width: 20%;">
-            <col style="width: 20%;">
-            <col style="width: 50%;">
-            <col style="width: 10%;">
+            <col style="width: 25%;">
+            <col style="width: 25%;">
+            <col style="width: 38%;">
+            <col style="width: 12%;">
           </colgroup>
           <thead>
             <tr>
-              <th>Characters</th>
-              <th>Pronun.</th>
-              <th>Translation</th>
+              <th class="pl-1">Characters</th>
+              <th class="pl-1">Pronun.</th>
+              <th class="pl-1">Translation</th>
               <th></th>
             </tr>
           </thead>
@@ -197,11 +197,11 @@ permalink: editor/
                 </td>
 
                 <td x-show="!isDeleted(word)">
-                  <button class="button is-small is-danger" @click="deleteEntry(word)">Delete</button>
+                  <button class="button is-small is-danger" @click="deleteEntry(word)">&#10006;</button>
                 </td>
 
                 <td x-show="isDeleted(word)">
-                  <button class="button is-small is-success" @click="undeleteEntry(word)">Undo</button>
+                  <button class="button is-small is-success" @click="undeleteEntry(word)">&#8617;</button>
               </tr>
             </template>
           </tbody>
