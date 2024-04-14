@@ -227,6 +227,7 @@ permalink: editor/
           <th>Enabled</th>
           <th>Name</th>
           <th class="is-hidden-mobile">Words</th>
+          <th class="is-hidden-mobile">Count</th>
           <th></th>
         </tr>
         <template x-for="wordPack in $store.editor.wordPacks">
@@ -236,6 +237,7 @@ permalink: editor/
             <td x-text="wordPack.name"></td>
             <td class="is-hidden-mobile"
               x-text="wordPack.expand ? wordPack.expand.words_via_pack.map((w) => w.characters).join(', ') : ''"></td>
+            <td class="is-hidden-mobile" x-text="wordPack.expand ? wordPack.expand.words_via_pack.length : 0"></td>
             <td class="is-flex is-justify-content-flex-end">
               <button class="button mr-2" @click="openModal(wordPack)">Edit</button>
               <button class="button is-danger" @click="deleteWordPack(wordPack.id)">Delete</button>
