@@ -86,7 +86,22 @@ permalink: editor/
         pb.autoCancellation(false);
 
         const invalidInsertions = this.inserted.filter((word) => !word.characters || !word.pronunciation || !word.translation);
-        const invalidChanges = Object.entries(this.changed).filter(([id, changes]) => !changes.characters || !changes.pronunciation || !changes.translation);
+        const invalidChanges = Object.entries(this.changed).filter(([id, changes]) => {
+          if ("characters" in changes && !changes.characters) {
+            return true;
+          }
+
+          if ("pronunciation" in changes && !changes.pronunciation) {
+            return true;
+          }
+
+          if ("translation" in changes && !changes.translation) {
+            return true;
+          }
+
+          return false;
+        });
+
 
         if (invalidInsertions.length || invalidChanges.length) {
           alert("Please fill all fields before submitting changes.");
