@@ -243,6 +243,15 @@ permalink: editor/
               <button class="button is-danger" @click="deleteWordPack(wordPack.id)">Delete</button>
             </td>
         </template>
+        <tr>
+          <td></td>
+          <td>Total</td>
+          <td class="is-hidden-mobile"></td>
+          <td class="is-hidden-mobile"
+            x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.expand ? pack.expand.words_via_pack.length : 0), 0)">
+          </td>
+          <td></td>
+        </tr>
       </table>
     </div>
     <div x-show="!$store.editor.wordPacks.length">
