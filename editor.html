@@ -259,19 +259,19 @@ permalink: editor/
             </td>
         </template>
         <tr>
-          <td></td>
+          <td class="is-hidden-mobile"></td>
           <td>Active</td>
           <td class="is-hidden-mobile"></td>
-          <td class="is-hidden-mobile"
+          <td
             x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.enabled ? (pack.expand ? pack.expand.words_via_pack.length : 0) : 0), 0)">
           </td>
           <td></td>
         </tr>
         <tr>
-          <td></td>
+          <td class="is-hidden-mobile"></td>
           <td>Total</td>
           <td class="is-hidden-mobile"></td>
-          <td class="is-hidden-mobile"
+          <td
             x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.expand ? pack.expand.words_via_pack.length : 0), 0)">
           </td>
           <td></td>
