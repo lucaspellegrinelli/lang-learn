@@ -34,6 +34,14 @@ your recall of the characters by presenting their translations or pronunciations
   <img src="https://github.com/lucaspellegrinelli/lang-learn/assets/19651296/74c8bb8e-b918-47ef-ae55-5c2a3feac365" width="250px"/>
 </p>
 
+## Tools used
+
+ - [AlpineJS](https://alpinejs.dev/) as a JavaScript framework
+ - [Jekyll](https://jekyllrb.com/) for serving the static website
+ - [Bulma](https://bulma.io/) for CSS
+ - [Pocketbase](https://pocketbase.io/) for database/auth management (hosted elsewhere)
+ - [Github Pages Jekyll Deployment](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll) for deploying the website
+
 ## Running locally
 
 ### Prerequisites
