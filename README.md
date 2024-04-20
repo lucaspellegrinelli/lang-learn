@@ -14,7 +14,7 @@
 
 ## About The Project
 
-This website allows you to register word packs consisting of words from any Asian language, complete with the character,
+This is a personal project I created to help me and my friend learn Chinese (in my case) and Japanese (in his case). It allows you to register word packs consisting of words from any Asian language, complete with the character,
 its pronunciation, and its translation. You can select the word packs you wish to learn and engage in a game that tests
 your recall of the characters by presenting their translations or pronunciations.
 
