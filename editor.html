@@ -6,11 +6,12 @@ permalink: editor/
 <script>
   function data() {
     return {
-      targetWordPack: {name: ""},
+      targetWordPack: { name: "" },
       deleted: [],
       changed: {},
       inserted: [],
       insertRow() {
+        console.log(this.targetWordPack.expand);
         this.inserted.push({
           id: this.inserted.length + 1,
           characters: "",
@@ -117,7 +118,7 @@ permalink: editor/
 
         const updates = Object.entries(this.changed).map(([id, changes]) => pb.collection("words").update(id, changes));
         const deletions = this.deleted.map((id) => pb.collection("words").delete(id));
-        const updatePackName = pb.collection("wordpacks").update(targetPack.id, {name: targetPack.name});
+        const updatePackName = pb.collection("wordpacks").update(targetPack.id, { name: targetPack.name });
 
         Promise.all([...insertions, ...updates, ...deletions, updatePackName]).then(() => {
           pb.autoCancellation(true);
@@ -151,6 +152,10 @@ permalink: editor/
           return [];
         }
 
+        if (!this.targetWordPack.expand.words_via_pack) {
+          return [];
+        }
+
         return this.targetWordPack.expand.words_via_pack;
       },
       openModal(wordPack) {
@@ -162,7 +167,7 @@ permalink: editor/
       },
       handlePackEnabledChange(event, wordPack) {
         const checked = event.target.checked;
-        pb.collection("wordpacks").update(wordPack.id, {enabled: checked}).then(() => {
+        pb.collection("wordpacks").update(wordPack.id, { enabled: checked }).then(() => {
           Alpine.store("editor").updateWordPacks();
         });
       }
@@ -251,8 +256,8 @@ permalink: editor/
             </td>
             <td x-text="wordPack.name"></td>
             <td class="is-hidden-mobile"
-              x-text="wordPack.expand ? wordPack.expand['words(pack)'].map((w) => w.characters).join(', ') : ''"></td>
-            <td class="is-hidden-mobile" x-text="wordPack.expand ? wordPack.expand['words(pack)'].length : 0"></td>
+              x-text="wordPack.expand ? wordPack.expand.words_via_pack.map((w) => w.characters).join(', ') : ''"></td>
+            <td class="is-hidden-mobile" x-text="wordPack.expand ? wordPack.expand.words_via_pack.length : 0"></td>
             <td class="is-flex is-justify-content-flex-end">
               <button class="button mr-2" @click="openModal(wordPack)">Edit</button>
               <button class="button is-danger" @click="deleteWordPack(wordPack.id)">Delete</button>
@@ -263,7 +268,7 @@ permalink: editor/
           <td>Active</td>
           <td class="is-hidden-mobile"></td>
           <td
-            x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.enabled ? (pack.expand ? pack.expand['words(pack)'].length : 0) : 0), 0)">
+            x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.enabled ? (pack.expand ? pack.expand.words_via_pack.length : 0) : 0), 0)">
           </td>
           <td></td>
         </tr>
@@ -272,7 +277,7 @@ permalink: editor/
           <td>Total</td>
           <td class="is-hidden-mobile"></td>
           <td
-            x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.expand ? pack.expand['words(pack)'].length : 0), 0)">
+            x-text="$store.editor.wordPacks.reduce((acc, pack) => acc + (pack.expand ? pack.expand.words_via_pack.length : 0), 0)">
           </td>
           <td></td>
         </tr>

@@ -2,15 +2,15 @@ const pb = new PocketBase("https://pb.ellep.dev/");
 
 const authStore = {
     userEmail: null,
-    updateEmail: function() {
+    updateEmail: function () {
         this.userEmail = pb.authStore.isValid ? pb.authStore.model.email : null;
     },
-    login: async function() {
+    login: async function () {
         await pb.collection("users").authWithOAuth2({ provider: "google" });
         this.updateEmail();
         window.location.href = "/";
     },
-    logout: function() {
+    logout: function () {
         pb.authStore.clear();
         this.updateEmail();
         window.location.href = "/";
@@ -19,15 +19,15 @@ const authStore = {
 
 const editorStore = {
     wordPacks: [],
-    updateWordPacks: async function() {
-        this.wordPacks = await pb.collection('wordpacks').getFullList({ expand: "words(pack)", sort: "-name" });
+    updateWordPacks: async function () {
+        this.wordPacks = await pb.collection('wordpacks').getFullList({ expand: "words_via_pack", sort: "-name" });
     }
 }
 
-document.addEventListener("alpine:init", () => {
+document.addEventListener("alpine:init", async () => {
     Alpine.store("auth", authStore);
     Alpine.store("auth").updateEmail();
 
     Alpine.store("editor", editorStore);
-    Alpine.store("editor").updateWordPacks();
+    await Alpine.store("editor").updateWordPacks();
 });
