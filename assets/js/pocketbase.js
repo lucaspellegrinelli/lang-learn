@@ -20,7 +20,7 @@ const authStore = {
 const editorStore = {
     wordPacks: [],
     updateWordPacks: async function() {
-        this.wordPacks = await pb.collection('wordpacks').getFullList({ expand: "words_via_pack", sort: "-name" });
+        this.wordPacks = await pb.collection('wordpacks').getFullList({ expand: "words(pack)", sort: "-name" });
     }
 }
 
